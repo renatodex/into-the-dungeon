@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 8483bf144192e3c4a8afe2721845a7a2
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Dolly
+  fontNames:
+  - Dolly
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 03d9aa115502fa445a80e144eae38180, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
