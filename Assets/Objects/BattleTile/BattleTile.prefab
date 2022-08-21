@@ -49,7 +49,7 @@ MonoBehaviour:
   AttackCell: {fileID: 2100000, guid: 777f2cfbe980f81468a995f744198572, type: 2}
   MovementCell: {fileID: 2100000, guid: dd9dadabc334ddb4484cffbf37134b86, type: 2}
   TransparentCell: {fileID: 2100000, guid: 1d88ee2666dcc3c42aab5f7aabbf5267, type: 2}
-  cellState: 1
+  cellState: 0
   ColorMaterial: {fileID: 1203643078899628070}
   HighlightGameObject: {fileID: 1203643078335615683}
   isSelected: 0
@@ -84,7 +84,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1203643078335615682
 Transform:
   m_ObjectHideFlags: 0

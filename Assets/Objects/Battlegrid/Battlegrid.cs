@@ -7,10 +7,10 @@ public class BattleGrid : MonoBehaviour
     [SerializeField] private float _width;
     [SerializeField] private float _height;
     [SerializeField] private float _size;
-    [SerializeField] private Battletile _battleTilePrefab;
+    [SerializeField] private BattleTile _battleTilePrefab;
     [SerializeField] private Vector3 _offset;
 
-    private Dictionary<Vector2, Battletile> _tiles;
+    private Dictionary<Vector2, BattleTile> _tiles;
 
     // Update is called once per frame
     void Start()
@@ -36,7 +36,7 @@ public class BattleGrid : MonoBehaviour
         {
             for (int z = 0; z < _height; z++)
             {
-                Battletile battleTile = Instantiate(
+                BattleTile battleTile = Instantiate(
                     _battleTilePrefab,
                     new Vector3(x * _size + _offset.x, 0f + _offset.y, z * _size + _offset.z),
                     Quaternion.identity

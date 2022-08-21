@@ -8,7 +8,7 @@ public enum TileState {
     Attack,
 };
 
-public class Battletile : MonoBehaviour
+public class BattleTile : MonoBehaviour
 {
     [SerializeField] Material AttackCell;
     [SerializeField] Material MovementCell;
