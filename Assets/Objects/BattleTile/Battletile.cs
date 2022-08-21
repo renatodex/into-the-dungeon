@@ -15,11 +15,17 @@ public class Battletile : MonoBehaviour
     [SerializeField] Material TransparentCell;
     [SerializeField] TileState cellState = new TileState();
 
+    [SerializeField] Renderer ColorMaterial;
+    [SerializeField] GameObject HighlightGameObject;
+
+    [SerializeField] bool isSelected = false;
+
     //[SerializeField] string[] = System.Enum.Get
 
     // Start is called before the first frame update
     void Start()
     {
+        HighlightGameObject.SetActive(isSelected);
     }
 
     // Update is called once per frame
@@ -41,6 +47,16 @@ public class Battletile : MonoBehaviour
         }
     }
 
+    public void OnMouseEnter()
+    {
+        HighlightGameObject.SetActive(true);
+    }
+
+    public void OnMouseExit()
+    {
+        HighlightGameObject.SetActive(false);
+    }
+
     public void SetState(TileState state)
     {
         cellState = state;
@@ -48,7 +64,7 @@ public class Battletile : MonoBehaviour
 
     private void SetMaterial (Material material)
     {
-        this.GetComponent<Renderer>().material = material;
+        ColorMaterial.material = material;
     }
 
 }

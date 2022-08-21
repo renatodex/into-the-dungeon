@@ -23,8 +23,7 @@ public class UnitDetails : MonoBehaviour
         unit = battleSystem.GetSelectedUnit();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         unit = battleSystem.GetSelectedUnit();
         unitNameLabel.text = unit.unitName;
@@ -37,8 +36,24 @@ public class UnitDetails : MonoBehaviour
         unitHp.text = $"{currentHpFormatted}/{maxHpFormatted}";
         unitMp.text = $"{currentMpFormatted}/{maxMpFormatted}";
         unitLevel.text = unit.level.ToString("D2");
-        unitCurrentHpBar.value = (100f * unit.currentHp / unit.maxHp)/100;
-        unitCurrentMpBar.value = (100f * unit.currentMp / unit.maxMp)/100;
+
+        if (unit.maxHp == 0)
+        {
+            unitCurrentHpBar.value = 0;
+        }
+        else
+        {
+            unitCurrentHpBar.value = (100f * unit.currentHp / unit.maxHp) / 100f;
+        }
+
+        if (unit.maxMp == 0)
+        {
+            unitCurrentMpBar.value = 0;
+        }
+        else
+        {
+            unitCurrentMpBar.value = (100f * unit.currentMp / unit.maxMp) / 100f;
+        }
 
         unitPortrait.sprite = unit.portrait;
     }

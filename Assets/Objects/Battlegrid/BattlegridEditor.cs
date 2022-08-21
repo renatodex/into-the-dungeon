@@ -2,16 +2,16 @@
 using System.Collections;
 using UnityEditor;
 
-[CustomEditor(typeof(Battlegrid))]
-public class BattlegridEditor : Editor
+[CustomEditor(typeof(BattleGrid))]
+public class BattleGridEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        Battlegrid battleGrid = (Battlegrid)target;
+        BattleGrid battleGrid = (BattleGrid)target;
 
-        if (GUILayout.Button("Build Object"))
+        if (GUILayout.Button("Generate Grid"))
         {
             Debug.Log("Do something");
             battleGrid.GenerateGrid();

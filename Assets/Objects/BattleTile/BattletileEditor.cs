@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEditor;
 
-[CustomEditor(typeof(Battlegrid))]
+[CustomEditor(typeof(BattleGrid))]
 public class BattletileEditor : Editor
 {
     public override void OnInspectorGUI()

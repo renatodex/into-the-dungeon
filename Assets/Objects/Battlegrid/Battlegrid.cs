@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Battlegrid : MonoBehaviour
+public class BattleGrid : MonoBehaviour
 {
     [SerializeField] private float _width;
     [SerializeField] private float _height;
