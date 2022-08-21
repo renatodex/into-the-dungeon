@@ -2,15 +2,11 @@
 using System.Collections;
 using UnityEditor;
 
-[CustomEditor(typeof(Battlegrid))]
-public class BattletileEditor : Editor
+[CustomEditor(typeof(BattleTile))]
+public class BattleTileEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
-
-        /*Battlegrid battleTile = (Battletile)target;
-        GUIContent tileStates = new GUIContent("Tile States");
-        battleTile.tile*/
     }
 }
