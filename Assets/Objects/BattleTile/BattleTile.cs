@@ -20,6 +20,8 @@ public class BattleTile : MonoBehaviour
 
     [SerializeField] bool isSelected = false;
 
+    [SerializeField] Vector2 position;
+
     //[SerializeField] string[] = System.Enum.Get
 
     // Start is called before the first frame update
@@ -45,6 +47,17 @@ public class BattleTile : MonoBehaviour
         {
             SetMaterial(TransparentCell);
         }
+    }
+
+    public void SetPosition(Vector2 position)
+    {
+        this.position = position;
+    }
+
+    public void OnMouseDown()
+    {
+        BattleUnit battleUnit = BattleSystem.Instance.GetSelectedUnit();
+        battleUnit.SetBattleFieldPosition(this.position);
     }
 
     public void OnMouseEnter()

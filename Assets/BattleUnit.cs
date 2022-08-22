@@ -8,6 +8,7 @@ public class BattleUnit : MonoBehaviour
     [SerializeField] private Character unit;
     [SerializeField] private CharacterSO unitSO;
     [SerializeField] private BattleSystem battleSystem;
+    [SerializeField] private Vector2 battleFieldPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -29,13 +30,22 @@ public class BattleUnit : MonoBehaviour
                 if (hitUnit != null)
                 {
                     Debug.Log(hitUnit.GetUnit());
-                    battleSystem.SetSelectedUnit(hitUnit.GetUnit());
+                    battleSystem.SetSelectedUnit(hitUnit);
                 }
             }
         }
+
+        BattleTile battleTile = BattleGrid.Instance.GetTileAtPosition(battleFieldPosition);
+        this.transform.position = battleTile.transform.position;
     }
 
-    private Character GetUnit()
+    public void SetBattleFieldPosition (Vector2 position)
+    {
+        battleFieldPosition = position;
+    }
+
+
+    public Character GetUnit()
     {
         return unit;
     }

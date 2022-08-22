@@ -12,6 +12,13 @@ public class BattleGrid : MonoBehaviour
 
     private Dictionary<Vector2, BattleTile> _tiles;
 
+    public static BattleGrid Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     // Update is called once per frame
     void Start()
     {
@@ -20,6 +27,7 @@ public class BattleGrid : MonoBehaviour
 
     public void GenerateGrid ()
     {
+        _tiles = new Dictionary<Vector2, BattleTile>();
         GameObject[] battleTiles = GameObject.FindGameObjectsWithTag("Battletile");
         for(int i = 0; i < battleTiles.Length; i++)
         {
@@ -36,15 +44,31 @@ public class BattleGrid : MonoBehaviour
         {
             for (int z = 0; z < _height; z++)
             {
+                Vector2 position = new Vector2(x, z);
+
                 BattleTile battleTile = Instantiate(
                     _battleTilePrefab,
-                    new Vector3(x * _size + _offset.x, 0f + _offset.y, z * _size + _offset.z),
+                    new Vector3(x * _size + _offset.x, _offset.y, z * _size + _offset.z),
                     Quaternion.identity
                 );
                 battleTile.tag = "Battletile";
 
                 battleTile.transform.parent = this.transform;
+
+                battleTile.SetPosition(position);
+
+                _tiles[position] = battleTile;
             }
         }
+    }
+
+    public BattleTile GetTileAtPosition (Vector2 position)
+    {
+        if (_tiles.TryGetValue(position, out BattleTile tile))
+        {
+            return tile;
+        }
+
+        return null;
     }
 }

@@ -11,9 +11,10 @@ public class Character
     public int maxMp;
     public int currentMp;
     public int level;
+    public int movement;
     public Sprite portrait;
 
-    public Character(int id, string unitName, int maxHp = 0, int currentHp = 0, int maxMp = 0, int currentMp = 0, int level = 1)
+    public Character(int id, string unitName, int movement = 1, int maxHp = 0, int currentHp = 0, int maxMp = 0, int currentMp = 0, int level = 1)
     {
         this.id = id;
         this.unitName = unitName;
@@ -22,6 +23,7 @@ public class Character
         this.maxMp = maxMp;
         this.currentMp = currentMp;
         this.level = level;
+        this.movement = movement;
     }
 
     public void SetPortrait(Sprite portrait)

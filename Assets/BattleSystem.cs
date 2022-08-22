@@ -4,21 +4,26 @@ using UnityEngine;
 
 public class BattleSystem : MonoBehaviour
 {
-    [SerializeField] private Character selectedUnit;
-
+    [SerializeField] private BattleUnit selectedUnit;
     private CharacterDatabase characterDatabase;
+    public static BattleSystem Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         characterDatabase = GameObject.FindObjectOfType<CharacterDatabase>();
-        selectedUnit = characterDatabase.characters[0];
     }
 
-    public Character GetSelectedUnit ()
+    public BattleUnit GetSelectedUnit ()
     {
         return selectedUnit;
     }
 
-    public void SetSelectedUnit (Character unit)
+    public void SetSelectedUnit (BattleUnit unit)
     {
         selectedUnit = unit;
     }
