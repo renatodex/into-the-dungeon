@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UnitDetails : MonoBehaviour
 {
-    [SerializeField] private Character unit;
+    [SerializeField] private Character unitCharacter;
     [SerializeField] private TMPro.TextMeshProUGUI unitNameLabel;
     [SerializeField] private TMPro.TextMeshProUGUI unitHp;
     [SerializeField] private TMPro.TextMeshProUGUI unitMp;
@@ -20,41 +20,41 @@ public class UnitDetails : MonoBehaviour
     void Start()
     {
         battleSystem = GameObject.FindObjectOfType<BattleSystem>();
-        unit = battleSystem.GetSelectedUnit();
+        unitCharacter = BattleSystem.Instance.GetSelectedUnit().GetUnit();
     }
 
     private void Update()
     {
-        unit = battleSystem.GetSelectedUnit();
-        unitNameLabel.text = unit.unitName;
+        unitCharacter = BattleSystem.Instance.GetSelectedUnit().GetUnit();
+        unitNameLabel.text = unitCharacter.unitName;
 
-        string maxHpFormatted = unit.maxHp.ToString("D3");
-        string currentHpFormatted = unit.currentHp.ToString("D3");
-        string maxMpFormatted = unit.maxMp.ToString("D3");
-        string currentMpFormatted = unit.currentMp.ToString("D3");
+        string maxHpFormatted = unitCharacter.maxHp.ToString("D3");
+        string currentHpFormatted = unitCharacter.currentHp.ToString("D3");
+        string maxMpFormatted = unitCharacter.maxMp.ToString("D3");
+        string currentMpFormatted = unitCharacter.currentMp.ToString("D3");
 
         unitHp.text = $"{currentHpFormatted}/{maxHpFormatted}";
         unitMp.text = $"{currentMpFormatted}/{maxMpFormatted}";
-        unitLevel.text = unit.level.ToString("D2");
+        unitLevel.text = unitCharacter.level.ToString("D2");
 
-        if (unit.maxHp == 0)
+        if (unitCharacter.maxHp == 0)
         {
             unitCurrentHpBar.value = 0;
         }
         else
         {
-            unitCurrentHpBar.value = (100f * unit.currentHp / unit.maxHp) / 100f;
+            unitCurrentHpBar.value = (100f * unitCharacter.currentHp / unitCharacter.maxHp) / 100f;
         }
 
-        if (unit.maxMp == 0)
+        if (unitCharacter.maxMp == 0)
         {
             unitCurrentMpBar.value = 0;
         }
         else
         {
-            unitCurrentMpBar.value = (100f * unit.currentMp / unit.maxMp) / 100f;
+            unitCurrentMpBar.value = (100f * unitCharacter.currentMp / unitCharacter.maxMp) / 100f;
         }
 
-        unitPortrait.sprite = unit.portrait;
+        unitPortrait.sprite = unitCharacter.portrait;
     }
 }
