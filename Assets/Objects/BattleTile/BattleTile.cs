@@ -58,6 +58,7 @@ public class BattleTile : MonoBehaviour
     {
         BattleUnit battleUnit = BattleSystem.Instance.GetSelectedUnit();
         battleUnit.SetBattleFieldPosition(this.position);
+        BattleGrid.Instance.ResetGridState();
     }
 
     public void OnMouseEnter()

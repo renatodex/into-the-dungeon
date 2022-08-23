@@ -16,25 +16,44 @@ public class BattleUnit : MonoBehaviour
         unit = unitSO.character;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnMouseDown()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit, 100f))
+        if (Physics.Raycast(ray, out hit, 100f))
+        {
+            BattleUnit hitUnit = hit.transform.GetComponent<BattleUnit>();
+            if (hitUnit != null)
             {
-                BattleUnit hitUnit = hit.transform.GetComponent<BattleUnit>();
-                if (hitUnit != null)
+                Character character = hitUnit.GetUnit();
+                Debug.Log(character.unitName);
+                battleSystem.SetSelectedUnit(hitUnit);
+
+                BattleGrid.Instance.ResetGridState();
+
+                for (int x = (int)(battleFieldPosition.x - character.movement); x <= (int)(battleFieldPosition.x + character.movement); x++)
                 {
-                    Debug.Log(hitUnit.GetUnit());
-                    battleSystem.SetSelectedUnit(hitUnit);
+                    for (int z = (int)(battleFieldPosition.y - character.movement); z <= (int)(battleFieldPosition.y + character.movement); z++)
+                    {
+                        // Manhattan Distance formula
+                        int AbsX = (int) Mathf.Abs(battleFieldPosition.x - x);
+                        int AbsZ = (int) Mathf.Abs(battleFieldPosition.y - z);
+
+                        if (AbsX + AbsZ <= character.movement && BattleGrid.Instance.WithinGridBounding(new Vector2(x, z)))
+                        {
+                            BattleTile tile = BattleGrid.Instance.GetTileAtPosition(new Vector2(x, z));
+                            tile.SetState(TileState.Movement);
+                        }
+                    }
                 }
             }
         }
+    }
 
+    // Update is called once per frame
+    void Update()
+    {
         BattleTile battleTile = BattleGrid.Instance.GetTileAtPosition(battleFieldPosition);
         this.transform.position = battleTile.transform.position;
     }
