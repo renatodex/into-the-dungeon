@@ -58,6 +58,34 @@ public class BattleUnit : MonoBehaviour
         this.transform.position = battleTile.transform.position;
     }
 
+    public bool CanMoveTo(Vector2 position)
+    {
+        Character character = GetUnit();
+
+        bool canMoveToTile = false;
+        for (int x = (int)(battleFieldPosition.x - character.movement); x <= (int)(battleFieldPosition.x + character.movement); x++)
+        {
+            for (int z = (int)(battleFieldPosition.y - character.movement); z <= (int)(battleFieldPosition.y + character.movement); z++)
+            {
+                // Manhattan Distance formula
+                int AbsX = (int)Mathf.Abs(battleFieldPosition.x - x);
+                int AbsZ = (int)Mathf.Abs(battleFieldPosition.y - z);
+
+                if (AbsX + AbsZ <= character.movement && BattleGrid.Instance.WithinGridBounding(new Vector2(x, z)))
+                {
+                    BattleTile tile = BattleGrid.Instance.GetTileAtPosition(new Vector2(x, z));
+                    
+                    if (tile && tile.GetPosition() == position)
+                    {
+                        canMoveToTile = true;
+                    }
+                }
+            }
+        }
+
+        return canMoveToTile;
+    }
+
     public void SetBattleFieldPosition (Vector2 position)
     {
         battleFieldPosition = position;

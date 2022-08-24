@@ -22,6 +22,8 @@ public class BattleTile : MonoBehaviour
 
     [SerializeField] Vector2 position;
 
+    [SerializeField] bool walkable;
+
     //[SerializeField] string[] = System.Enum.Get
 
     // Start is called before the first frame update
@@ -49,6 +51,11 @@ public class BattleTile : MonoBehaviour
         }
     }
 
+    public Vector2 GetPosition ()
+    {
+        return position;
+    }
+
     public void SetPosition(Vector2 position)
     {
         this.position = position;
@@ -57,8 +64,16 @@ public class BattleTile : MonoBehaviour
     public void OnMouseDown()
     {
         BattleUnit battleUnit = BattleSystem.Instance.GetSelectedUnit();
-        battleUnit.SetBattleFieldPosition(this.position);
-        BattleGrid.Instance.ResetGridState();
+        if (battleUnit.CanMoveTo(this.position))
+        {
+            battleUnit.SetBattleFieldPosition(this.position);
+            BattleGrid.Instance.ResetGridState();
+        }
+    }
+
+    public bool isWalkable ()
+    {
+        return walkable;
     }
 
     public void OnMouseEnter()
