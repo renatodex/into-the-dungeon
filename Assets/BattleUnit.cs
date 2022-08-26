@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,28 +25,16 @@ public class BattleUnit : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 100f))
         {
             BattleUnit hitUnit = hit.transform.GetComponent<BattleUnit>();
+
             if (hitUnit != null)
             {
-                Character character = hitUnit.GetUnit();
-                Debug.Log(character.unitName);
-                battleSystem.SetSelectedUnit(hitUnit);
-
                 BattleGrid.Instance.ResetGridState();
+                BattleSystem.Instance.SetSelectedUnit(hitUnit);
+                List<BattleTile> walkableTiles = GetWalkableTiles(hitUnit);
 
-                for (int x = (int)(battleFieldPosition.x - character.movement); x <= (int)(battleFieldPosition.x + character.movement); x++)
+                for (int i = 0; i < walkableTiles.Count(); i++)
                 {
-                    for (int z = (int)(battleFieldPosition.y - character.movement); z <= (int)(battleFieldPosition.y + character.movement); z++)
-                    {
-                        // Manhattan Distance formula
-                        int AbsX = (int) Mathf.Abs(battleFieldPosition.x - x);
-                        int AbsZ = (int) Mathf.Abs(battleFieldPosition.y - z);
-
-                        if (AbsX + AbsZ <= character.movement && BattleGrid.Instance.WithinGridBounding(new Vector2(x, z)))
-                        {
-                            BattleTile tile = BattleGrid.Instance.GetTileAtPosition(new Vector2(x, z));
-                            tile.SetState(TileState.Movement);
-                        }
-                    }
+                    walkableTiles[i].SetState(TileState.Movement);
                 }
             }
         }
@@ -58,32 +47,42 @@ public class BattleUnit : MonoBehaviour
         this.transform.position = battleTile.transform.position;
     }
 
+    public Vector2 GetBattleFieldPosition()
+    {
+        return battleFieldPosition;
+    }
+
     public bool CanMoveTo(Vector2 position)
     {
-        Character character = GetUnit();
+        List<BattleTile> walkableTiles = GetWalkableTiles(this);
+        IEnumerable<BattleTile> match = walkableTiles.Where(battleTile => battleTile.GetPosition() == position);
+        return match.Count() > 0;
+    }
 
-        bool canMoveToTile = false;
-        for (int x = (int)(battleFieldPosition.x - character.movement); x <= (int)(battleFieldPosition.x + character.movement); x++)
+    public List<BattleTile> GetWalkableTiles (BattleUnit unit)
+    {
+        Character character = unit.GetUnit();
+        List<BattleTile> walkableTiles = new List<BattleTile>();
+        for (int x = (int)(unit.GetBattleFieldPosition().x - character.movement); x <= (int)(unit.GetBattleFieldPosition().x + character.movement); x++)
         {
-            for (int z = (int)(battleFieldPosition.y - character.movement); z <= (int)(battleFieldPosition.y + character.movement); z++)
+            for (int z = (int)(unit.GetBattleFieldPosition().y - character.movement); z <= (int)(unit.GetBattleFieldPosition().y + character.movement); z++)
             {
                 // Manhattan Distance formula
-                int AbsX = (int)Mathf.Abs(battleFieldPosition.x - x);
-                int AbsZ = (int)Mathf.Abs(battleFieldPosition.y - z);
+                int AbsX = (int)Mathf.Abs(unit.GetBattleFieldPosition().x - x);
+                int AbsZ = (int)Mathf.Abs(unit.GetBattleFieldPosition().y - z);
 
                 if (AbsX + AbsZ <= character.movement && BattleGrid.Instance.WithinGridBounding(new Vector2(x, z)))
                 {
                     BattleTile tile = BattleGrid.Instance.GetTileAtPosition(new Vector2(x, z));
-                    
-                    if (tile && tile.GetPosition() == position)
+                    if (tile)
                     {
-                        canMoveToTile = true;
+                        walkableTiles.Add(tile);
                     }
                 }
             }
         }
 
-        return canMoveToTile;
+        return walkableTiles;
     }
 
     public void SetBattleFieldPosition (Vector2 position)

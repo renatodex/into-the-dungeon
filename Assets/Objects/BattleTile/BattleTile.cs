@@ -22,10 +22,6 @@ public class BattleTile : MonoBehaviour
 
     [SerializeField] Vector2 position;
 
-    [SerializeField] bool walkable;
-
-    //[SerializeField] string[] = System.Enum.Get
-
     // Start is called before the first frame update
     void Start()
     {
@@ -70,12 +66,6 @@ public class BattleTile : MonoBehaviour
             BattleGrid.Instance.ResetGridState();
         }
     }
-
-    public bool isWalkable ()
-    {
-        return walkable;
-    }
-
     public void OnMouseEnter()
     {
         HighlightGameObject.SetActive(true);
