@@ -7,4 +7,5 @@ using UnityEngine;
 public class CharacterSO : ScriptableObject
 {
     public Character character;
+    public ItemSO initialWeapon;
 }

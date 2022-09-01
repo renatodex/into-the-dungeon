@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UnitDetails : MonoBehaviour
 {
+    [SerializeField] private BattleUnit battleUnitPrefab;
     [SerializeField] private Character unitCharacter;
     [SerializeField] private TMPro.TextMeshProUGUI unitNameLabel;
     [SerializeField] private TMPro.TextMeshProUGUI unitHp;
@@ -13,6 +14,7 @@ public class UnitDetails : MonoBehaviour
     [SerializeField] private Slider unitCurrentMpBar;
     [SerializeField] private TMPro.TextMeshProUGUI unitLevel;
     [SerializeField] private Image unitPortrait;
+    [SerializeField] private bool hideBars = false;
 
     private BattleSystem battleSystem;
 
@@ -25,36 +27,73 @@ public class UnitDetails : MonoBehaviour
 
     private void Update()
     {
-        unitCharacter = BattleSystem.Instance.GetSelectedUnit().GetUnit();
-        unitNameLabel.text = unitCharacter.unitName;
+        if (hideBars)
+        {
+            if (battleUnitPrefab == BattleSystem.Instance.GetSelectedUnit())
+            {
+                unitCurrentHpBar.gameObject.SetActive(true);
+            } else
+            {
+                unitCurrentHpBar.gameObject.SetActive(
+                    battleUnitPrefab.IsHovered()
+                );
+            }
+        }
 
+        unitCharacter = BattleSystem.Instance.GetSelectedUnit().GetUnit();
         string maxHpFormatted = unitCharacter.maxHp.ToString("D3");
         string currentHpFormatted = unitCharacter.currentHp.ToString("D3");
         string maxMpFormatted = unitCharacter.maxMp.ToString("D3");
         string currentMpFormatted = unitCharacter.currentMp.ToString("D3");
 
-        unitHp.text = $"{currentHpFormatted}/{maxHpFormatted}";
-        unitMp.text = $"{currentMpFormatted}/{maxMpFormatted}";
-        unitLevel.text = unitCharacter.level.ToString("D2");
-
-        if (unitCharacter.maxHp == 0)
+        if (unitNameLabel != null)
         {
-            unitCurrentHpBar.value = 0;
-        }
-        else
-        {
-            unitCurrentHpBar.value = (100f * unitCharacter.currentHp / unitCharacter.maxHp) / 100f;
+            unitNameLabel.text = unitCharacter.unitName;
         }
 
-        if (unitCharacter.maxMp == 0)
+        if (unitHp != null)
         {
-            unitCurrentMpBar.value = 0;
-        }
-        else
-        {
-            unitCurrentMpBar.value = (100f * unitCharacter.currentMp / unitCharacter.maxMp) / 100f;
+            unitHp.text = $"{currentHpFormatted}/{maxHpFormatted}";
         }
 
-        unitPortrait.sprite = unitCharacter.portrait;
+        if (unitMp != null)
+        {
+            unitMp.text = $"{currentMpFormatted}/{maxMpFormatted}";
+        }
+
+        if (unitLevel != null)
+        {
+            unitLevel.text = unitCharacter.level.ToString("D2");
+        }
+
+        if (unitCurrentHpBar != null)
+        {
+            if (unitCharacter.maxHp == 0)
+            {
+                unitCurrentHpBar.value = 0;
+            }
+            else
+            {
+                unitCurrentHpBar.value = (100f * unitCharacter.currentHp / unitCharacter.maxHp) / 100f;
+            }
+        }
+
+        if (unitCurrentMpBar != null)
+        {
+            if (unitCharacter.maxMp == 0)
+            {
+                unitCurrentMpBar.value = 0;
+            }
+            else
+            {
+                unitCurrentMpBar.value = (100f * unitCharacter.currentMp / unitCharacter.maxMp) / 100f;
+            }
+        }
+
+        if (unitPortrait != null)
+        {
+            unitPortrait.sprite = unitCharacter.portrait;
+        }
+
     }
 }

@@ -2,14 +2,24 @@
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 // This class describe a Unit inside the BattleField, which is different from the generic "Unit" model.
+public enum UnitState
+{
+    Idle,
+    Movement,
+    Attack,
+}
 public class BattleUnit : MonoBehaviour
 {
     [SerializeField] private Character unit;
     [SerializeField] private CharacterSO unitSO;
     [SerializeField] private BattleSystem battleSystem;
     [SerializeField] private Vector2 battleFieldPosition;
+    [SerializeField] private Outline outlineModel;
+    [SerializeField] private UnitState unitState = UnitState.Idle;
+    [SerializeField] private bool hovered = false;
 
     // Start is called before the first frame update
     void Start()
@@ -17,27 +27,79 @@ public class BattleUnit : MonoBehaviour
         unit = unitSO.character;
     }
 
+    public UnitState GetUnitState ()
+    {
+        return unitState;
+    }
+
+    public void SetUnitState (UnitState state)
+    {
+        this.unitState = state;
+    }
+
     private void OnMouseDown()
     {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        BattleSystem.Instance.StartUnitTurn(this);
+    }
 
-        if (Physics.Raycast(ray, out hit, 100f))
+    private void OnMouseOver()
+    {
+
+        SetHovered(true);
+        SetOutlineWidth(2f);
+    }
+
+    private void OnMouseExit()
+    {
+        SetHovered(false);
+        SetOutlineWidth(0f);
+    }
+
+    public void SetHovered (bool hovered)
+    {
+        this.hovered = hovered;
+    }
+    public bool IsHovered ()
+    {
+        return hovered;
+    }
+
+    public void SetOutlineWidth(float width)
+    {
+        outlineModel.OutlineWidth = width;
+    }
+
+    public void StartMovementPhase ()
+    {
+        SetOutlineWidth(2f);
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
-            BattleUnit hitUnit = hit.transform.GetComponent<BattleUnit>();
+            BattleGrid.Instance.ResetGridState();
+            List<BattleTile> walkableTiles = GetWalkableTiles(this);
 
-            if (hitUnit != null)
+            for (int i = 0; i < walkableTiles.Count(); i++)
             {
-                BattleGrid.Instance.ResetGridState();
-                BattleSystem.Instance.SetSelectedUnit(hitUnit);
-                List<BattleTile> walkableTiles = GetWalkableTiles(hitUnit);
-
-                for (int i = 0; i < walkableTiles.Count(); i++)
-                {
-                    walkableTiles[i].SetState(TileState.Movement);
-                }
+                walkableTiles[i].SetState(TileState.Movement);
             }
         }
+    }
+
+    public void FinishMovementPhase ()
+    {
+        SetOutlineWidth(0f);
+        SetUnitState(UnitState.Idle);
+    }
+
+    public void StartAttackPhase ()
+    {
+        BattleGrid.Instance.ResetGridState();
+        List<BattleTile> walkableTiles = GetAttackTiles(this);
+
+        for (int i = 0; i < walkableTiles.Count(); i++)
+        {
+            walkableTiles[i].SetState(TileState.Attack);
+        }
+        Debug.Log("Attack please");
     }
 
     // Update is called once per frame
@@ -59,19 +121,34 @@ public class BattleUnit : MonoBehaviour
         return match.Count() > 0;
     }
 
+    public List<BattleTile> GetAttackTiles (BattleUnit unit)
+    {
+        return GetCircularWalkableTiles(
+            unit.GetBattleFieldPosition(),
+            unit.GetUnit().GetAttackRange()
+        );
+    }
+
     public List<BattleTile> GetWalkableTiles (BattleUnit unit)
     {
-        Character character = unit.GetUnit();
+        return GetCircularWalkableTiles(
+            unit.GetBattleFieldPosition(),
+            unit.GetUnit().movement
+        );
+    }
+
+    public List<BattleTile> GetCircularWalkableTiles (Vector2 battleFieldPosition, int value)
+    {
         List<BattleTile> walkableTiles = new List<BattleTile>();
-        for (int x = (int)(unit.GetBattleFieldPosition().x - character.movement); x <= (int)(unit.GetBattleFieldPosition().x + character.movement); x++)
+        for (int x = (int)(battleFieldPosition.x - value); x <= (int)(battleFieldPosition.x + value); x++)
         {
-            for (int z = (int)(unit.GetBattleFieldPosition().y - character.movement); z <= (int)(unit.GetBattleFieldPosition().y + character.movement); z++)
+            for (int z = (int)(battleFieldPosition.y - value); z <= (int)(battleFieldPosition.y + value); z++)
             {
                 // Manhattan Distance formula
-                int AbsX = (int)Mathf.Abs(unit.GetBattleFieldPosition().x - x);
-                int AbsZ = (int)Mathf.Abs(unit.GetBattleFieldPosition().y - z);
+                int AbsX = (int)Mathf.Abs(battleFieldPosition.x - x);
+                int AbsZ = (int)Mathf.Abs(battleFieldPosition.y - z);
 
-                if (AbsX + AbsZ <= character.movement && BattleGrid.Instance.WithinGridBounding(new Vector2(x, z)))
+                if (AbsX + AbsZ <= value && BattleGrid.Instance.WithinGridBounding(new Vector2(x, z)))
                 {
                     BattleTile tile = BattleGrid.Instance.GetTileAtPosition(new Vector2(x, z));
                     if (tile)
@@ -89,7 +166,6 @@ public class BattleUnit : MonoBehaviour
     {
         battleFieldPosition = position;
     }
-
 
     public Character GetUnit()
     {

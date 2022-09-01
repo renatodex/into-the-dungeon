@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 public enum TileState {
     Transparent,
     Movement,
@@ -59,16 +59,23 @@ public class BattleTile : MonoBehaviour
 
     public void OnMouseDown()
     {
-        BattleUnit battleUnit = BattleSystem.Instance.GetSelectedUnit();
-        if (battleUnit.CanMoveTo(this.position))
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
-            battleUnit.SetBattleFieldPosition(this.position);
-            BattleGrid.Instance.ResetGridState();
+            BattleUnit battleUnit = BattleSystem.Instance.GetSelectedUnit();
+            if (battleUnit.CanMoveTo(this.position) && this.cellState == TileState.Movement)
+            {
+                battleUnit.SetBattleFieldPosition(this.position);
+                BattleGrid.Instance.ResetGridState();
+                battleUnit.FinishMovementPhase();
+            }
         }
     }
     public void OnMouseEnter()
     {
-        HighlightGameObject.SetActive(true);
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            HighlightGameObject.SetActive(true);
+        }
     }
 
     public void OnMouseExit()

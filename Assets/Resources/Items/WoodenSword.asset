@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c64bd19de08f2b4abac166103a194e2, type: 3}
+  m_Name: WoodenSword
+  m_EditorClassIdentifier: 
+  item:
+    id: 1
+    itemName: Espada de Madeira
+    attackRange: 1
+    itemType: arma
+    description: Uma espada de madeira comum
+    physicalAttack: 0
+    magicalAttack: 0
+    physicalDefense: 0
+    magicalDefense: 0
+    maxDurability: 0
+    currentDurability: 0
+    sellPrice: 0
+    portrait: {fileID: 0}

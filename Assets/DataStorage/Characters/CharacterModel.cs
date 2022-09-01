@@ -13,6 +13,7 @@ public class Character
     public int level;
     public int movement;
     public Sprite portrait;
+    public Item mainWeapon;
 
     public Character(int id, string unitName, int movement = 1, int maxHp = 0, int currentHp = 0, int maxMp = 0, int currentMp = 0, int level = 1)
     {
@@ -26,8 +27,18 @@ public class Character
         this.movement = movement;
     }
 
+    public void equipWeaponMain(Item item)
+    {
+        mainWeapon = item;
+    }
+
     public void SetPortrait(Sprite portrait)
     {
         this.portrait = portrait;
+    }
+
+    public int GetAttackRange ()
+    {
+        return mainWeapon.attackRange;
     }
 }
