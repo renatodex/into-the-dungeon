@@ -42,7 +42,6 @@ public class BattleUnit : MonoBehaviour
     {
         BattleUnit unit = BattleSystem.Instance.GetSelectedUnit();
 
-        Debug.Log(this.name);
         if (unit && unit.GetUnitState() == UnitState.Attack && !IsSelectedUnit())
         {
             if (unit.IsOnMyAttackRange(this))
@@ -68,9 +67,6 @@ public class BattleUnit : MonoBehaviour
         int rollValue2 = GameRolls.Instance.RollD20();
         int attackValue = unit.GetUnit().GetAttackValue();
 
-        //StartCoroutine(GameRolls.Instance.AnimateRollD20());
-        //yield return new WaitForSeconds(1f);
-
         int finalValue = Mathf.Max(rollValue1, rollValue2) + attackValue;
         int defenderDefense = defender.GetDefenseForWeapon(attacker.GetWeapon());
 
@@ -91,7 +87,6 @@ public class BattleUnit : MonoBehaviour
                 "Attack Missed. (" + finalValue + ") <-> (" + defenderDefense + ")"
             );
         }
-        //unit.GetUnit().mainWeapon.physicalAttack
 
         yield return null;
     }
