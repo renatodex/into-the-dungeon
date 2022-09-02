@@ -60,11 +60,12 @@ public class CharacterDatabase : MonoBehaviour
         List<Character> tempCharacters = new List<Character>();
         foreach (CharacterSO characterObject in characterObjects)
         {
-            Character tempCharacter = characterObject.character;
+            CharacterSO characterObjectCopy = Instantiate(characterObject);
+            Character tempCharacter = characterObjectCopy.character;
 
-            if (characterObject.initialWeapon != null)
+            if (characterObjectCopy.initialWeapon != null)
             {
-                tempCharacter.mainWeapon = characterObject.initialWeapon.item;
+                tempCharacter.mainWeapon = characterObjectCopy.initialWeapon.item;
             }
 
             tempCharacters.Add(tempCharacter);

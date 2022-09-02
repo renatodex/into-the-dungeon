@@ -15,6 +15,7 @@ public class UnitDetails : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI unitLevel;
     [SerializeField] private Image unitPortrait;
     [SerializeField] private bool hideBars = false;
+    [SerializeField] private bool guiMode = false;
 
     private BattleSystem battleSystem;
 
@@ -40,7 +41,14 @@ public class UnitDetails : MonoBehaviour
             }
         }
 
-        unitCharacter = BattleSystem.Instance.GetSelectedUnit().GetUnit();
+        if (guiMode)
+        {
+            unitCharacter = BattleSystem.Instance.GetSelectedUnit().GetUnit();
+            
+        } else
+        {
+            unitCharacter = battleUnitPrefab.GetUnit();
+        }
         string maxHpFormatted = unitCharacter.maxHp.ToString("D3");
         string currentHpFormatted = unitCharacter.currentHp.ToString("D3");
         string maxMpFormatted = unitCharacter.maxMp.ToString("D3");
@@ -71,10 +79,12 @@ public class UnitDetails : MonoBehaviour
             if (unitCharacter.maxHp == 0)
             {
                 unitCurrentHpBar.value = 0;
+                unitCurrentHpBar.enabled = false;
             }
             else
             {
                 unitCurrentHpBar.value = (100f * unitCharacter.currentHp / unitCharacter.maxHp) / 100f;
+                unitCurrentHpBar.enabled = true;
             }
         }
 

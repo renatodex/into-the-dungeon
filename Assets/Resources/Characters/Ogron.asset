@@ -21,19 +21,26 @@ MonoBehaviour:
     currentMp: 0
     level: 1
     movement: 3
+    physicalAttack: 0
+    physicalDefense: 15
+    magicalAttack: 0
+    magicalDefense: 0
     portrait: {fileID: 21300000, guid: 2439dc29b44a4754986384b647042bb5, type: 3}
     mainWeapon:
       id: 0
       itemName: 
       attackRange: 1
+      attackType: 0
       itemType: 
       description: 
-      physicalAttack: 0
+      physicalAttack: 1
       magicalAttack: 0
       physicalDefense: 0
       magicalDefense: 0
       maxDurability: 0
       currentDurability: 0
+      minDamage: 3
+      maxDamage: 6
       sellPrice: 0
       portrait: {fileID: 0}
   initialWeapon: {fileID: 0}

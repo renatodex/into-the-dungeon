@@ -13,16 +13,19 @@ MonoBehaviour:
   m_Name: WoodenSword
   m_EditorClassIdentifier: 
   item:
-    id: 1
+    id: 0
     itemName: Espada de Madeira
     attackRange: 1
-    itemType: arma
-    description: Uma espada de madeira comum
-    physicalAttack: 0
+    attackType: 0
+    itemType: 
+    description: Uma arma de madeira
+    physicalAttack: 1
     magicalAttack: 0
     physicalDefense: 0
     magicalDefense: 0
-    maxDurability: 0
-    currentDurability: 0
-    sellPrice: 0
+    maxDurability: 3
+    currentDurability: 3
+    minDamage: 7
+    maxDamage: 12
+    sellPrice: 100
     portrait: {fileID: 0}

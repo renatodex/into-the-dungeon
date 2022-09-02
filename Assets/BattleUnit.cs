@@ -24,7 +24,8 @@ public class BattleUnit : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        unit = unitSO.character;
+        unit = Instantiate(unitSO).character;
+        unit.mainWeapon = unitSO.initialWeapon.item;
     }
 
     public UnitState GetUnitState ()
@@ -39,7 +40,60 @@ public class BattleUnit : MonoBehaviour
 
     private void OnMouseDown()
     {
-        BattleSystem.Instance.StartUnitTurn(this);
+        BattleUnit unit = BattleSystem.Instance.GetSelectedUnit();
+
+        Debug.Log(this.name);
+        if (unit && unit.GetUnitState() == UnitState.Attack && !IsSelectedUnit())
+        {
+            if (unit.IsOnMyAttackRange(this))
+            {
+                StartCoroutine(TakeDamageOnWeaponAttack((unit)));
+            } else {
+                Debug.Log("Not on attack range!");
+            }   
+        }
+        else
+        {
+            BattleSystem.Instance.StartUnitTurn(this);
+        }
+    }
+
+    IEnumerator TakeDamageOnWeaponAttack (BattleUnit unit)
+    {
+        Character attacker = unit.GetUnit();
+        Character defender = this.GetUnit();
+
+        Debug.Log("PRAAAAA");
+        int rollValue1 = GameRolls.Instance.RollD20();
+        int rollValue2 = GameRolls.Instance.RollD20();
+        int attackValue = unit.GetUnit().GetAttackValue();
+
+        //StartCoroutine(GameRolls.Instance.AnimateRollD20());
+        //yield return new WaitForSeconds(1f);
+
+        int finalValue = Mathf.Max(rollValue1, rollValue2) + attackValue;
+        int defenderDefense = defender.GetDefenseForWeapon(attacker.GetWeapon());
+
+        if (finalValue > defender.GetDefenseForWeapon(attacker.GetWeapon()))
+        {
+            Debug.Log(
+                "Attack Succeeeded. (" + finalValue + ") <-> (" + defenderDefense + ")"
+            );
+            this.GetUnit().TakeDamage(
+                UnityEngine.Random.Range(
+                    attacker.GetWeapon().minDamage,
+                    attacker.GetWeapon().maxDamage
+                )
+            );
+        } else
+        {
+            Debug.Log(
+                "Attack Missed. (" + finalValue + ") <-> (" + defenderDefense + ")"
+            );
+        }
+        //unit.GetUnit().mainWeapon.physicalAttack
+
+        yield return null;
     }
 
     private void OnMouseOver()
@@ -99,7 +153,7 @@ public class BattleUnit : MonoBehaviour
         {
             walkableTiles[i].SetState(TileState.Attack);
         }
-        Debug.Log("Attack please");
+        //Debug.Log("Attack please");
     }
 
     // Update is called once per frame
@@ -107,6 +161,16 @@ public class BattleUnit : MonoBehaviour
     {
         BattleTile battleTile = BattleGrid.Instance.GetTileAtPosition(battleFieldPosition);
         this.transform.position = battleTile.transform.position;
+
+        if (Input.GetKey(KeyCode.Escape) && IsSelectedUnit())
+        {
+            SetUnitState(UnitState.Movement);
+        }
+    }
+
+    public bool IsSelectedUnit ()
+    {
+        return BattleSystem.Instance.GetSelectedUnit() == this;
     }
 
     public Vector2 GetBattleFieldPosition()
@@ -119,6 +183,21 @@ public class BattleUnit : MonoBehaviour
         List<BattleTile> walkableTiles = GetWalkableTiles(this);
         IEnumerable<BattleTile> match = walkableTiles.Where(battleTile => battleTile.GetPosition() == position);
         return match.Count() > 0;
+    }
+
+    public bool IsOnMyAttackRange(BattleUnit unit)
+    {
+        List<BattleTile> attackTiles = GetAttackTiles(this);
+
+        foreach(BattleTile attackTile in attackTiles)
+        {
+            if (attackTile.GetPosition() == unit.GetBattleFieldPosition())
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public List<BattleTile> GetAttackTiles (BattleUnit unit)
