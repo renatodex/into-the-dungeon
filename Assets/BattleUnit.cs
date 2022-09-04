@@ -20,12 +20,18 @@ public class BattleUnit : MonoBehaviour
     [SerializeField] private Outline outlineModel;
     [SerializeField] private UnitState unitState = UnitState.Idle;
     [SerializeField] private bool hovered = false;
+    [SerializeField] private Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
         unit = Instantiate(unitSO).character;
-        unit.mainWeapon = unitSO.initialWeapon.item;
+        Debug.Log(unitSO);
+
+        if (unitSO.initialWeapon != null)
+        {
+            unit.mainWeapon = unitSO.initialWeapon.item;
+        }
     }
 
     public UnitState GetUnitState ()
@@ -57,24 +63,44 @@ public class BattleUnit : MonoBehaviour
         }
     }
 
-    IEnumerator TakeDamageOnWeaponAttack (BattleUnit unit)
+    public void TriggerAttackAnimation ()
     {
-        Character attacker = unit.GetUnit();
+        animator.SetTrigger("BrawlAttack");
+    }
+
+    public bool HasAnimator ()
+    {
+        return animator != null;
+    }
+
+    IEnumerator TakeDamageOnWeaponAttack (BattleUnit attackerUnit)
+    {
+        Character attacker = attackerUnit.GetUnit();
         Character defender = this.GetUnit();
 
         Debug.Log("PRAAAAA");
         int rollValue1 = GameRolls.Instance.RollD20();
         int rollValue2 = GameRolls.Instance.RollD20();
-        int attackValue = unit.GetUnit().GetAttackValue();
+        int attackValue = attackerUnit.GetUnit().GetAttackValue();
 
         int finalValue = Mathf.Max(rollValue1, rollValue2) + attackValue;
         int defenderDefense = defender.GetDefenseForWeapon(attacker.GetWeapon());
+
+        if (attackerUnit.HasAnimator())
+        {
+            attackerUnit.TriggerAttackAnimation();
+        }
+
+        new WaitForSeconds(0.1f);
 
         if (finalValue > defender.GetDefenseForWeapon(attacker.GetWeapon()))
         {
             Debug.Log(
                 "Attack Succeeeded. (" + finalValue + ") <-> (" + defenderDefense + ")"
             );
+
+            yield return new WaitForSeconds(2f);
+
             this.GetUnit().TakeDamage(
                 UnityEngine.Random.Range(
                     attacker.GetWeapon().minDamage,

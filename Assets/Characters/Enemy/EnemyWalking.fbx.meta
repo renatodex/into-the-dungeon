@@ -1,94 +1,14 @@
 fileFormatVersion: 2
-guid: 67130d1b20066064eb07897431f5f9d4
+guid: 069f97c3f55595a40885a792468ff2b2
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: EnemyIdleAnimation
-  externalObjects:
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-0-L_Calf
-    second: {fileID: 2800000, guid: f2dd7f9dd76b01046860490e0c8d8417, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-1-L_Thigh
-    second: {fileID: 2800000, guid: 760dbbbaf7583ef47980d191b968bf2b, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-10-R_ForeArm-1
-    second: {fileID: 2800000, guid: ff4d0b747b06279458d573db1d7f3662, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-11-L_Hand
-    second: {fileID: 2800000, guid: 10f7361e0f561bf4689f14c86a675fa3, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-12-L_Arm
-    second: {fileID: 2800000, guid: da7a6df94bbf69e4da30b5caaf1b01d5, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-13-L_ForeArm
-    second: {fileID: 2800000, guid: cf42d7b50ad7edd43b8e03e92ed56b6a, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-14-R_Thigh-9
-    second: {fileID: 2800000, guid: 4c86dce6d67a3ba4aabae4d4c5f5315f, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-15-Head-9
-    second: {fileID: 2800000, guid: d0e3e29a3cd40f04e890fbca0a488e7f, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-2-L_Foot
-    second: {fileID: 2800000, guid: 5884ad2d23769e8498207540c5945e83, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-3-R_Foot
-    second: {fileID: 2800000, guid: fa3adac958d403b4996cab92e92c862c, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-4-R_Calf
-    second: {fileID: 2800000, guid: 49ca5b508f872e348aa7de7f950cfdf8, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-5-Spine1
-    second: {fileID: 2800000, guid: 10e1c217e8af84d4e86f754a82ef0712, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-6-Spine2-1
-    second: {fileID: 2800000, guid: af69edfbacff0c74aa037f0b0c9a57e0, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-7-Spine3
-    second: {fileID: 2800000, guid: bae22d5fd17a5014c8b2b77d96fe50e6, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-8-R_Hand
-    second: {fileID: 2800000, guid: 5fae160ef133152489717eea06ea6bc2, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: DungeonCrawler_Character_002-9-R_Arm-1
-    second: {fileID: 2800000, guid: 488aa661e3838584a94cf653729be32f, type: 3}
+    second: EnemyWalkingAnimation
+  externalObjects: {}
   materials:
-    materialImportMode: 1
+    materialImportMode: 2
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -97,7 +17,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
-    removeConstantScaleCurves: 0
+    removeConstantScaleCurves: 1
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -116,11 +36,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: EnemyIdleAnimation
+      name: EnemyWalkingAnimation
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 156
+      lastFrame: 61
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -128,7 +48,7 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 1
+      loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -156,7 +76,7 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
-    nodeNameCollisionStrategy: 0
+    nodeNameCollisionStrategy: 1
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -519,13 +439,14 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 67130d1b20066064eb07897431f5f9d4,
+    type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
-  avatarSetup: 1
-  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
-  remapMaterialsIfMaterialImportModeIsNone: 1
+  avatarSetup: 2
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
   additionalBone: 0
   userData: 
   assetBundleName: 
