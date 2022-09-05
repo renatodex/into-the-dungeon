@@ -23,7 +23,8 @@ public class UnitDetails : MonoBehaviour
     void Start()
     {
         battleSystem = GameObject.FindObjectOfType<BattleSystem>();
-        unitCharacter = BattleSystem.Instance.GetSelectedUnit().GetUnit();
+        BattleUnit selectedBattleUnit = BattleSystem.Instance.GetSelectedUnit();
+        unitCharacter = selectedBattleUnit.GetUnit();
     }
 
     private void Update()
@@ -105,5 +106,9 @@ public class UnitDetails : MonoBehaviour
             unitPortrait.sprite = unitCharacter.portrait;
         }
 
+        if (!guiMode && battleUnitPrefab.GetUnitState() == UnitState.Dead)
+        {
+            this.GetComponent<Canvas>().enabled = false;
+        }
     }
 }

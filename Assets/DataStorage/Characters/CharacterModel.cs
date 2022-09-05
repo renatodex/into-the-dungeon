@@ -69,7 +69,7 @@ public class Character
         return this.mainWeapon.GetAttackValue();
     }
 
-    public void TakeDamage(int value)
+    public bool TakeDamage(int value)
     {
         if (this.currentHp - value < 0)
         {
@@ -78,6 +78,13 @@ public class Character
         {
             this.currentHp -= value;
         }
+
+        return this.currentHp <= 0;
+    }
+
+    public bool DamageWillKill (int value)
+    {
+        return this.currentHp - value < 0;
     }
 
     public Item GetWeapon ()

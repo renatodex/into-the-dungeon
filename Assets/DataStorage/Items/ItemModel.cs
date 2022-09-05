@@ -75,4 +75,12 @@ public class Item
             return magicalAttack;
         }
     }
+
+    public int RollDamageValue ()
+    {
+        return UnityEngine.Random.Range(
+            this.minDamage,
+            this.maxDamage
+        );
+    }
 }

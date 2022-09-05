@@ -10,6 +10,7 @@ public enum UnitState
     Idle,
     Movement,
     Attack,
+    Dead,
 }
 public class BattleUnit : MonoBehaviour
 {
@@ -46,26 +47,26 @@ public class BattleUnit : MonoBehaviour
 
     private void OnMouseDown()
     {
-        BattleUnit unit = BattleSystem.Instance.GetSelectedUnit();
-
-        if (unit && unit.GetUnitState() == UnitState.Attack && !IsSelectedUnit())
+        if (GetUnitState() != UnitState.Dead)
         {
-            if (unit.IsOnMyAttackRange(this))
+            BattleUnit unit = BattleSystem.Instance.GetSelectedUnit();
+
+            if (unit && unit.GetUnitState() == UnitState.Attack && !IsSelectedUnit())
             {
-                StartCoroutine(TakeDamageOnWeaponAttack((unit)));
-            } else {
-                Debug.Log("Not on attack range!");
-            }   
+                if (unit.IsOnMyAttackRange(this))
+                {
+                    StartCoroutine(TakeDamageOnWeaponAttack((unit)));
+                }
+                else
+                {
+                    Debug.Log("Not on attack range!");
+                }
+            }
+            else
+            {
+                BattleSystem.Instance.StartUnitTurn(this);
+            }
         }
-        else
-        {
-            BattleSystem.Instance.StartUnitTurn(this);
-        }
-    }
-
-    public void TriggerAttackAnimation ()
-    {
-        animator.SetTrigger("BrawlAttack");
     }
 
     public bool HasAnimator ()
@@ -73,25 +74,35 @@ public class BattleUnit : MonoBehaviour
         return animator != null;
     }
 
-    IEnumerator TakeDamageOnWeaponAttack (BattleUnit attackerUnit)
+    public void TriggerDieAnimation()
     {
+        if (this.HasAnimator()) animator.SetTrigger("Die");
+    }
+
+    public void TriggerAttackAnimation()
+    {
+        if (this.HasAnimator()) animator.SetTrigger("BrawlAttack");
+    }
+
+    public void TriggerHitAnimation()
+    {
+        if (this.HasAnimator()) animator.SetTrigger("Hit");
+    }
+IEnumerator TakeDamageOnWeaponAttack (BattleUnit attackerUnit)
+    {
+        attackerUnit.TriggerAttackAnimation();
+
         Character attacker = attackerUnit.GetUnit();
+        BattleUnit defenderUnit = this;
         Character defender = this.GetUnit();
 
-        Debug.Log("PRAAAAA");
         int rollValue1 = GameRolls.Instance.RollD20();
         int rollValue2 = GameRolls.Instance.RollD20();
         int attackValue = attackerUnit.GetUnit().GetAttackValue();
-
         int finalValue = Mathf.Max(rollValue1, rollValue2) + attackValue;
         int defenderDefense = defender.GetDefenseForWeapon(attacker.GetWeapon());
 
-        if (attackerUnit.HasAnimator())
-        {
-            attackerUnit.TriggerAttackAnimation();
-        }
-
-        new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.6f);
 
         if (finalValue > defender.GetDefenseForWeapon(attacker.GetWeapon()))
         {
@@ -99,14 +110,22 @@ public class BattleUnit : MonoBehaviour
                 "Attack Succeeeded. (" + finalValue + ") <-> (" + defenderDefense + ")"
             );
 
-            yield return new WaitForSeconds(2f);
+            int damageValue = attacker.GetWeapon().RollDamageValue();
 
-            this.GetUnit().TakeDamage(
-                UnityEngine.Random.Range(
-                    attacker.GetWeapon().minDamage,
-                    attacker.GetWeapon().maxDamage
-                )
+            bool damageWillKill = defenderUnit.GetUnit().DamageWillKill(
+                damageValue
             );
+
+            if (damageWillKill)
+            {
+                defenderUnit.TriggerDieAnimation();
+                defenderUnit.SetUnitState(UnitState.Dead);
+            } else
+            {
+                defenderUnit.TriggerHitAnimation();
+            }
+
+            this.GetUnit().TakeDamage(damageValue);
         } else
         {
             Debug.Log(
@@ -119,15 +138,20 @@ public class BattleUnit : MonoBehaviour
 
     private void OnMouseOver()
     {
-
-        SetHovered(true);
-        SetOutlineWidth(2f);
+        if (GetUnitState() != UnitState.Dead)
+        {
+            SetHovered(true);
+            SetOutlineWidth(2f);
+        }
     }
 
     private void OnMouseExit()
     {
-        SetHovered(false);
-        SetOutlineWidth(0f);
+        if (GetUnitState() != UnitState.Dead)
+        {
+            SetHovered(false);
+            SetOutlineWidth(0f);
+        }
     }
 
     public void SetHovered (bool hovered)

@@ -53,7 +53,10 @@ public class BattleSystem : MonoBehaviour
     {
         foreach (BattleUnit combatUnit in combatUnits)
         {
-            combatUnit.SetUnitState(UnitState.Idle);
+            if (combatUnit.GetUnitState() != UnitState.Dead)
+            {
+                combatUnit.SetUnitState(UnitState.Idle);
+            }
         }
     }
 

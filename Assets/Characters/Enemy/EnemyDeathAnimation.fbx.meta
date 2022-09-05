@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 069f97c3f55595a40885a792468ff2b2
+guid: 08803d9e9fd80df41a14d438157bf7ed
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: EnemyWalkingAnimation
+    second: EnemyDeathAnimation
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -36,18 +36,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: EnemyWalkingAnimation
+      name: EnemyDeathAnimation
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 61
+      lastFrame: 57
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
