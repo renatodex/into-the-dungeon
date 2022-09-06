@@ -6,7 +6,6 @@ using UnityEngine;
 public class LookAtObject : MonoBehaviour
 {
     [SerializeField] private Camera objectToLookAt;
-    [SerializeField] private Quaternion rotationVector;
 
     void Update()
     {

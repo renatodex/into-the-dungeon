@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEditor;
 
-[CustomEditor(typeof(BattleGrid))]  
+[CustomEditor(typeof(BattleGrid))]
 public class BattleGridEditor : Editor
 {
     public override void OnInspectorGUI()
