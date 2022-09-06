@@ -91,11 +91,15 @@ public class BattleUnit : MonoBehaviour
     #endregion
 
     #region Public Interface
-
     public UnitState GetUnitState ()
     {
         return unitState;
     }
+    public bool IsSelectedUnit()
+    {
+        return BattleSystem.Instance.GetSelectedUnit() == this;
+    }
+
     public bool IsHovered()
     {
         return hovered;
@@ -140,17 +144,6 @@ public class BattleUnit : MonoBehaviour
         {
             walkableTiles[i].SetState(TileState.Attack);
         }
-        //Debug.Log("Attack please");
-    }
-
-    public bool IsSelectedUnit ()
-    {
-        return BattleSystem.Instance.GetSelectedUnit() == this;
-    }
-
-    public Vector2 GetBattleFieldPosition()
-    {
-        return battleFieldPosition;
     }
 
     public bool CanMoveTo(Vector2 position)
@@ -160,11 +153,30 @@ public class BattleUnit : MonoBehaviour
         return match.Count() > 0;
     }
 
-    public bool IsOnMyAttackRange(BattleUnit unit)
+    public void SetBattleFieldPosition (Vector2 position)
+    {
+        battleFieldPosition = position;
+    }
+
+    public Character GetUnit()
+    {
+        return unit;
+    }
+
+    #endregion
+
+    #region Private Interface
+
+    private Vector2 GetBattleFieldPosition()
+    {
+        return battleFieldPosition;
+    }
+
+    private bool IsOnMyAttackRange(BattleUnit unit)
     {
         List<BattleTile> attackTiles = GetAttackTiles(this);
 
-        foreach(BattleTile attackTile in attackTiles)
+        foreach (BattleTile attackTile in attackTiles)
         {
             if (attackTile.GetPosition() == unit.GetBattleFieldPosition())
             {
@@ -175,7 +187,7 @@ public class BattleUnit : MonoBehaviour
         return false;
     }
 
-    public List<BattleTile> GetAttackTiles (BattleUnit unit)
+    private List<BattleTile> GetAttackTiles(BattleUnit unit)
     {
         return GetCircularWalkableTiles(
             unit.GetBattleFieldPosition(),
@@ -183,7 +195,7 @@ public class BattleUnit : MonoBehaviour
         );
     }
 
-    public List<BattleTile> GetWalkableTiles (BattleUnit unit)
+    private List<BattleTile> GetWalkableTiles(BattleUnit unit)
     {
         return GetCircularWalkableTiles(
             unit.GetBattleFieldPosition(),
@@ -191,7 +203,7 @@ public class BattleUnit : MonoBehaviour
         );
     }
 
-    public List<BattleTile> GetCircularWalkableTiles (Vector2 battleFieldPosition, int value)
+    private List<BattleTile> GetCircularWalkableTiles(Vector2 battleFieldPosition, int value)
     {
         List<BattleTile> walkableTiles = new List<BattleTile>();
         for (int x = (int)(battleFieldPosition.x - value); x <= (int)(battleFieldPosition.x + value); x++)
@@ -215,20 +227,6 @@ public class BattleUnit : MonoBehaviour
 
         return walkableTiles;
     }
-
-    public void SetBattleFieldPosition (Vector2 position)
-    {
-        battleFieldPosition = position;
-    }
-
-    public Character GetUnit()
-    {
-        return unit;
-    }
-
-    #endregion
-
-    #region Private Interface
 
     private bool HasAnimator()
     {

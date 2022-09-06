@@ -3,112 +3,175 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum UnitDetailsUIMode
+{
+    Canvas,
+    GameObject,
+}
+
 public class UnitDetails : MonoBehaviour
 {
     [SerializeField] private BattleUnit battleUnitPrefab;
-    [SerializeField] private Character unitCharacter;
     [SerializeField] private TMPro.TextMeshProUGUI unitNameLabel;
-    [SerializeField] private TMPro.TextMeshProUGUI unitHp;
-    [SerializeField] private TMPro.TextMeshProUGUI unitMp;
+    [SerializeField] private TMPro.TextMeshProUGUI unitHpText;
+    [SerializeField] private TMPro.TextMeshProUGUI unitMpText;
     [SerializeField] private Slider unitCurrentHpBar;
     [SerializeField] private Slider unitCurrentMpBar;
     [SerializeField] private TMPro.TextMeshProUGUI unitLevel;
     [SerializeField] private Image unitPortrait;
-    [SerializeField] private bool hideBars = false;
-    [SerializeField] private bool guiMode = false;
+    [SerializeField] private UnitDetailsUIMode uiMode = UnitDetailsUIMode.GameObject;
 
-    private BattleSystem battleSystem;
+    #region Unity Methods
 
-    // Start is called before the first frame update
     void Start()
     {
-        battleSystem = GameObject.FindObjectOfType<BattleSystem>();
         BattleUnit selectedBattleUnit = BattleSystem.Instance.GetSelectedUnit();
-        unitCharacter = selectedBattleUnit.GetUnit();
     }
 
     private void Update()
     {
-        if (hideBars)
+        BattleUnit battleUnit = getBattleUnitByMode(uiMode);
+
+        renderUnitHpBar(battleUnit, unitCurrentHpBar);
+
+        renderUnitMpBar(battleUnit, unitCurrentMpBar);
+
+        if (uiMode == UnitDetailsUIMode.Canvas)
         {
-            if (battleUnitPrefab == BattleSystem.Instance.GetSelectedUnit())
-            {
-                unitCurrentHpBar.gameObject.SetActive(true);
-            } else
-            {
-                unitCurrentHpBar.gameObject.SetActive(
-                    battleUnitPrefab.IsHovered()
-                );
-            }
+            renderUnitName(battleUnit, unitNameLabel);
+
+            renderUnitLevel(battleUnit, unitLevel);
+
+            renderUnitHpMpText(battleUnit, unitHpText, unitMpText);
+
+            renderUnitPortrait(battleUnit, unitPortrait);
         }
 
-        if (guiMode)
+        if (uiMode == UnitDetailsUIMode.GameObject)
         {
-            unitCharacter = BattleSystem.Instance.GetSelectedUnit().GetUnit();
-            
-        } else
-        {
-            unitCharacter = battleUnitPrefab.GetUnit();
-        }
-        string maxHpFormatted = unitCharacter.maxHp.ToString("D3");
-        string currentHpFormatted = unitCharacter.currentHp.ToString("D3");
-        string maxMpFormatted = unitCharacter.maxMp.ToString("D3");
-        string currentMpFormatted = unitCharacter.currentMp.ToString("D3");
+            hideCanvasIfUnitIsDead(battleUnit, this.GetComponent<Canvas>());
 
-        if (unitNameLabel != null)
-        {
-            unitNameLabel.text = unitCharacter.unitName;
-        }
-
-        if (unitHp != null)
-        {
-            unitHp.text = $"{currentHpFormatted}/{maxHpFormatted}";
-        }
-
-        if (unitMp != null)
-        {
-            unitMp.text = $"{currentMpFormatted}/{maxMpFormatted}";
-        }
-
-        if (unitLevel != null)
-        {
-            unitLevel.text = unitCharacter.level.ToString("D2");
-        }
-
-        if (unitCurrentHpBar != null)
-        {
-            if (unitCharacter.maxHp == 0)
-            {
-                unitCurrentHpBar.value = 0;
-                unitCurrentHpBar.enabled = false;
-            }
-            else
-            {
-                unitCurrentHpBar.value = (100f * unitCharacter.currentHp / unitCharacter.maxHp) / 100f;
-                unitCurrentHpBar.enabled = true;
-            }
-        }
-
-        if (unitCurrentMpBar != null)
-        {
-            if (unitCharacter.maxMp == 0)
-            {
-                unitCurrentMpBar.value = 0;
-            }
-            else
-            {
-                unitCurrentMpBar.value = (100f * unitCharacter.currentMp / unitCharacter.maxMp) / 100f;
-            }
-        }
-
-        if (unitPortrait != null)
-        {
-            unitPortrait.sprite = unitCharacter.portrait;
-        }
-
-        if (!guiMode && battleUnitPrefab.GetUnitState() == UnitState.Dead)
-        {
-            this.GetComponent<Canvas>().enabled = false;
+            showHpBarOnSelectedOrHover(battleUnit, unitCurrentHpBar);
         }
     }
+
+    #endregion
+
+    #region Private Methods
+
+    private BattleUnit getBattleUnitByMode(UnitDetailsUIMode uiMode)
+    {
+        if (uiMode == UnitDetailsUIMode.Canvas)
+        {
+            return BattleSystem.Instance.GetSelectedUnit();
+        }
+        else
+        {
+            return battleUnitPrefab;
+        }
+    }
+
+    private void hideCanvasIfUnitIsDead(BattleUnit battleUnit, Canvas canvas)
+    {
+        if (battleUnit.GetUnitState() == UnitState.Dead)
+        {
+            canvas.enabled = false;
+        }
+    }
+
+    private void renderUnitLevel (BattleUnit battleUnit, TMPro.TextMeshProUGUI label = null)
+    {
+        if (label != null)
+        {
+            label.text = battleUnit.GetUnit().level.ToString("D2");
+        }
+    }
+
+    private void renderUnitName (BattleUnit battleUnit, TMPro.TextMeshProUGUI label = null)
+    {
+        if (label != null)
+        {
+            label.text = battleUnit.GetUnit().unitName;
+        }
+    }
+
+    private void renderUnitHpMpText(BattleUnit battleUnit, TMPro.TextMeshProUGUI hpLabel, TMPro.TextMeshProUGUI mpLabel)
+    {
+        Character character = battleUnit.GetUnit();
+
+        string maxHpFormatted = character.maxHp.ToString("D3");
+        string currentHpFormatted = character.currentHp.ToString("D3");
+        string maxMpFormatted = character.maxMp.ToString("D3");
+        string currentMpFormatted = character.currentMp.ToString("D3");
+
+        if (unitHpText != null)
+        {
+            unitHpText.text = $"{currentHpFormatted}/{maxHpFormatted}";
+        }
+
+        if (unitMpText != null)
+        {
+            unitMpText.text = $"{currentMpFormatted}/{maxMpFormatted}";
+        }
+    }
+
+    private void renderUnitHpBar (BattleUnit battleUnit, Slider sliderBar = null)
+    {
+        Character character = battleUnit.GetUnit();
+
+        if (sliderBar != null)
+        {
+            if (character.maxHp == 0)
+            {
+                sliderBar.value = 0;
+                sliderBar.enabled = false;
+            }
+            else
+            {
+                sliderBar.value = (100f * character.currentHp / character.maxHp) / 100f;
+                sliderBar.enabled = true;
+            }
+        }
+    }
+
+    private void showHpBarOnSelectedOrHover (BattleUnit battleUnit, Slider slider)
+    {
+        if (battleUnit.IsSelectedUnit())
+        {
+            slider.gameObject.SetActive(true);
+        }
+        else
+        {
+            slider.gameObject.SetActive(
+                battleUnit.IsHovered()
+            );
+        }
+    }
+
+    private void renderUnitMpBar (BattleUnit battleUnit, Slider sliderBar = null)
+    {
+        Character character = battleUnit.GetUnit();
+
+        if (sliderBar != null)
+        {
+            if (character.maxMp == 0)
+            {
+                sliderBar.value = 0;
+            }
+            else
+            {
+                sliderBar.value = (100f * character.currentMp / character.maxMp) / 100f;
+            }
+        }
+    }
+
+    private void renderUnitPortrait (BattleUnit battleUnit, Image portrait = null)
+    {
+        if (portrait != null)
+        {
+            portrait.sprite = battleUnit.GetUnit().portrait;
+        }
+    }
+
+    #endregion
 }
