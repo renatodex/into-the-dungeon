@@ -9,17 +9,14 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] private List<BattleUnit> combatUnits;
     [SerializeField] private Button attackButton;
     [SerializeField] private Button movementButton;
-    private CharacterDatabase characterDatabase;
+    [SerializeField] private CharacterDatabase characterDatabase;
     public static BattleSystem Instance;
+
+    #region Unity Events
 
     private void Awake()
     {
         Instance = this;
-    }
-
-    void Start()
-    {
-        characterDatabase = GameObject.FindObjectOfType<CharacterDatabase>();
     }
 
     private void Update()
@@ -35,13 +32,17 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Public Interface
+
     public void StartUnitTurn(BattleUnit unit)
     {
         ResetAllUnitStates();
-        unit.SetUnitState(UnitState.Movement);
         SetSelectedUnit(unit);
-        SetupOnUnitAttack();
+        unit.SetUnitState(UnitState.Movement);
         unit.SetOutlineWidth(2f);
+        BattleSystemUI.Instance.SetupOnUnitAttack();
     }
 
     public BattleUnit GetSelectedUnit ()
@@ -49,7 +50,11 @@ public class BattleSystem : MonoBehaviour
         return selectedUnit;
     }
 
-    public void ResetAllUnitStates ()
+    #endregion
+
+    #region Private Interface
+
+    private void ResetAllUnitStates ()
     {
         foreach (BattleUnit combatUnit in combatUnits)
         {
@@ -65,14 +70,5 @@ public class BattleSystem : MonoBehaviour
         selectedUnit = unit;
     }
 
-    public void SetupOnUnitAttack ()
-    {
-        attackButton.onClick.AddListener(OnUnitAttack);
-    }
-
-    public void OnUnitAttack ()
-    {
-        selectedUnit.SetUnitState(UnitState.Attack);
-        selectedUnit.StartAttackPhase();
-    }
+    #endregion
 }

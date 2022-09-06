@@ -23,11 +23,11 @@ public class BattleUnit : MonoBehaviour
     [SerializeField] private bool hovered = false;
     [SerializeField] private Animator animator;
 
-    // Start is called before the first frame update
+    #region Unity Events
+
     void Start()
     {
         unit = Instantiate(unitSO).character;
-        Debug.Log(unitSO);
 
         if (unitSO.initialWeapon != null)
         {
@@ -35,14 +35,15 @@ public class BattleUnit : MonoBehaviour
         }
     }
 
-    public UnitState GetUnitState ()
+    void Update()
     {
-        return unitState;
-    }
+        BattleTile battleTile = BattleGrid.Instance.GetTileAtPosition(battleFieldPosition);
+        this.transform.position = battleTile.transform.position;
 
-    public void SetUnitState (UnitState state)
-    {
-        this.unitState = state;
+        if (Input.GetKey(KeyCode.Escape) && IsSelectedUnit())
+        {
+            SetUnitState(UnitState.Movement);
+        }
     }
 
     private void OnMouseDown()
@@ -69,73 +70,6 @@ public class BattleUnit : MonoBehaviour
         }
     }
 
-    public bool HasAnimator ()
-    {
-        return animator != null;
-    }
-
-    public void TriggerDieAnimation()
-    {
-        if (this.HasAnimator()) animator.SetTrigger("Die");
-    }
-
-    public void TriggerAttackAnimation()
-    {
-        if (this.HasAnimator()) animator.SetTrigger("BrawlAttack");
-    }
-
-    public void TriggerHitAnimation()
-    {
-        if (this.HasAnimator()) animator.SetTrigger("Hit");
-    }
-IEnumerator TakeDamageOnWeaponAttack (BattleUnit attackerUnit)
-    {
-        attackerUnit.TriggerAttackAnimation();
-
-        Character attacker = attackerUnit.GetUnit();
-        BattleUnit defenderUnit = this;
-        Character defender = this.GetUnit();
-
-        int rollValue1 = GameRolls.Instance.RollD20();
-        int rollValue2 = GameRolls.Instance.RollD20();
-        int attackValue = attackerUnit.GetUnit().GetAttackValue();
-        int finalValue = Mathf.Max(rollValue1, rollValue2) + attackValue;
-        int defenderDefense = defender.GetDefenseForWeapon(attacker.GetWeapon());
-
-        yield return new WaitForSeconds(0.6f);
-
-        if (finalValue > defender.GetDefenseForWeapon(attacker.GetWeapon()))
-        {
-            Debug.Log(
-                "Attack Succeeeded. (" + finalValue + ") <-> (" + defenderDefense + ")"
-            );
-
-            int damageValue = attacker.GetWeapon().RollDamageValue();
-
-            bool damageWillKill = defenderUnit.GetUnit().DamageWillKill(
-                damageValue
-            );
-
-            if (damageWillKill)
-            {
-                defenderUnit.TriggerDieAnimation();
-                defenderUnit.SetUnitState(UnitState.Dead);
-            } else
-            {
-                defenderUnit.TriggerHitAnimation();
-            }
-
-            this.GetUnit().TakeDamage(damageValue);
-        } else
-        {
-            Debug.Log(
-                "Attack Missed. (" + finalValue + ") <-> (" + defenderDefense + ")"
-            );
-        }
-
-        yield return null;
-    }
-
     private void OnMouseOver()
     {
         if (GetUnitState() != UnitState.Dead)
@@ -154,18 +88,17 @@ IEnumerator TakeDamageOnWeaponAttack (BattleUnit attackerUnit)
         }
     }
 
-    public void SetHovered (bool hovered)
+    #endregion
+
+    #region Public Interface
+
+    public UnitState GetUnitState ()
     {
-        this.hovered = hovered;
+        return unitState;
     }
-    public bool IsHovered ()
+    public bool IsHovered()
     {
         return hovered;
-    }
-
-    public void SetOutlineWidth(float width)
-    {
-        outlineModel.OutlineWidth = width;
     }
 
     public void StartMovementPhase ()
@@ -181,6 +114,15 @@ IEnumerator TakeDamageOnWeaponAttack (BattleUnit attackerUnit)
                 walkableTiles[i].SetState(TileState.Movement);
             }
         }
+    }
+
+    public void SetUnitState(UnitState state)
+    {
+        this.unitState = state;
+    }
+    public void SetOutlineWidth(float width)
+    {
+        outlineModel.OutlineWidth = width;
     }
 
     public void FinishMovementPhase ()
@@ -199,18 +141,6 @@ IEnumerator TakeDamageOnWeaponAttack (BattleUnit attackerUnit)
             walkableTiles[i].SetState(TileState.Attack);
         }
         //Debug.Log("Attack please");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        BattleTile battleTile = BattleGrid.Instance.GetTileAtPosition(battleFieldPosition);
-        this.transform.position = battleTile.transform.position;
-
-        if (Input.GetKey(KeyCode.Escape) && IsSelectedUnit())
-        {
-            SetUnitState(UnitState.Movement);
-        }
     }
 
     public bool IsSelectedUnit ()
@@ -295,4 +225,84 @@ IEnumerator TakeDamageOnWeaponAttack (BattleUnit attackerUnit)
     {
         return unit;
     }
+
+    #endregion
+
+    #region Private Interface
+
+    private bool HasAnimator()
+    {
+        return animator != null;
+    }
+
+    private void TriggerDieAnimation()
+    {
+        if (this.HasAnimator()) animator.SetTrigger("Die");
+    }
+
+    private void TriggerAttackAnimation()
+    {
+        if (this.HasAnimator()) animator.SetTrigger("BrawlAttack");
+    }
+
+    private void TriggerHitAnimation()
+    {
+        if (this.HasAnimator()) animator.SetTrigger("Hit");
+    }
+    IEnumerator TakeDamageOnWeaponAttack(BattleUnit attackerUnit)
+    {
+        attackerUnit.TriggerAttackAnimation();
+
+        Character attacker = attackerUnit.GetUnit();
+        BattleUnit defenderUnit = this;
+        Character defender = this.GetUnit();
+
+        int rollValue1 = GameRolls.Instance.RollD20();
+        int rollValue2 = GameRolls.Instance.RollD20();
+        int attackValue = attackerUnit.GetUnit().GetAttackValue();
+        int finalValue = Mathf.Max(rollValue1, rollValue2) + attackValue;
+        int defenderDefense = defender.GetDefenseForWeapon(attacker.GetWeapon());
+
+        yield return new WaitForSeconds(0.6f);
+
+        if (finalValue > defender.GetDefenseForWeapon(attacker.GetWeapon()))
+        {
+            Debug.Log(
+                "Attack Succeeeded. (" + finalValue + ") <-> (" + defenderDefense + ")"
+            );
+
+            int damageValue = attacker.GetWeapon().RollDamageValue();
+
+            bool damageWillKill = defenderUnit.GetUnit().DamageWillKill(
+                damageValue
+            );
+
+            if (damageWillKill)
+            {
+                defenderUnit.TriggerDieAnimation();
+                defenderUnit.SetUnitState(UnitState.Dead);
+            }
+            else
+            {
+                defenderUnit.TriggerHitAnimation();
+            }
+
+            this.GetUnit().TakeDamage(damageValue);
+        }
+        else
+        {
+            Debug.Log(
+                "Attack Missed. (" + finalValue + ") <-> (" + defenderDefense + ")"
+            );
+        }
+
+        yield return null;
+    }
+
+    private void SetHovered(bool hovered)
+    {
+        this.hovered = hovered;
+    }
+
+    #endregion
 }

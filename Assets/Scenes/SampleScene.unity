@@ -2816,6 +2816,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1102162757}
   - component: {fileID: 1102162756}
+  - component: {fileID: 1102162758}
   m_Layer: 0
   m_Name: BattleSystem
   m_TagString: Untagged
@@ -2841,6 +2842,7 @@ MonoBehaviour:
   - {fileID: 1235150638}
   attackButton: {fileID: 927457129}
   movementButton: {fileID: 1984407383}
+  characterDatabase: {fileID: 415687144}
 --- !u!4 &1102162757
 Transform:
   m_ObjectHideFlags: 0
@@ -2856,6 +2858,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1102162758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1102162755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7bc485d8d971b54889d274214d4d024, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackButton: {fileID: 927457129}
+  movementButton: {fileID: 1984407383}
 --- !u!95 &1110519184 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 482699125711402672, guid: afaa1cbe7ac642f48812a9ae72193dde,
