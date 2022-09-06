@@ -3589,7 +3589,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectToLookAt: {fileID: 963194227}
-  rotationVector: {x: 0, y: 0, z: 0, w: 0}
 --- !u!4 &1269458022 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 54dd9e9f843c2914aa948bdf02605f6f,
@@ -3789,7 +3788,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectToLookAt: {fileID: 963194227}
-  rotationVector: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1001 &1376145101
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4211,46 +4209,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleUnitPrefab: {fileID: 0}
-  unitCharacter:
-    id: 0
-    unitName: 
-    maxHp: 0
-    currentHp: 0
-    maxMp: 0
-    currentMp: 0
-    level: 0
-    movement: 0
-    physicalAttack: 0
-    physicalDefense: 0
-    magicalAttack: 0
-    magicalDefense: 0
-    portrait: {fileID: 0}
-    mainWeapon:
-      id: 0
-      itemName: 
-      attackRange: 0
-      attackType: 0
-      itemType: 
-      description: 
-      physicalAttack: 0
-      magicalAttack: 0
-      physicalDefense: 0
-      magicalDefense: 0
-      maxDurability: 0
-      currentDurability: 0
-      minDamage: 0
-      maxDamage: 0
-      sellPrice: 0
-      portrait: {fileID: 0}
   unitNameLabel: {fileID: 609792074}
-  unitHp: {fileID: 1725035368}
-  unitMp: {fileID: 1997327042}
+  unitHpText: {fileID: 0}
+  unitMpText: {fileID: 0}
   unitCurrentHpBar: {fileID: 55866632}
   unitCurrentMpBar: {fileID: 1201919888}
   unitLevel: {fileID: 1238073645}
   unitPortrait: {fileID: 1585145642}
-  hideBars: 0
-  guiMode: 1
+  uiMode: 0
 --- !u!1001 &1424034148
 PrefabInstance:
   m_ObjectHideFlags: 0
