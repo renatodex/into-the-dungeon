@@ -1,7 +1,9 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class BattleSystem : MonoBehaviour
 {
@@ -23,13 +25,74 @@ public class BattleSystem : MonoBehaviour
     {
         if (selectedUnit.GetUnitState() == UnitState.Movement)
         {
-            selectedUnit.StartMovementPhase();
+            StartMovementPhase(selectedUnit);
         }
 
         if (selectedUnit.GetUnitState() == UnitState.Attack)
         {
-            selectedUnit.StartAttackPhase();
+            StartAttackPhase(selectedUnit);
         }
+    }
+
+    #endregion
+
+    #region Movement Methods
+    public void StartMovementPhase(BattleUnit battleUnit)
+    {
+        battleUnit.SetOutlineWidth(2f);
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            BattleGrid.Instance.ResetGridState();
+            BattleGrid.Instance.SetMovementTilesForUnit(battleUnit);
+        }
+    }
+
+    public void ExecuteMovement(BattleTile battleTile)
+    {
+        BattleUnit selectedBattleUnit = GetSelectedUnit();
+        Vector2 battleTilePosition = battleTile.GetPosition();
+
+        if (selectedBattleUnit.CanMoveTo(battleTilePosition) && battleTile.GetState() == TileState.Movement)
+        {
+            selectedBattleUnit.SetBattleFieldPosition(battleTilePosition);
+            BattleGrid.Instance.ResetGridState();
+            FinishMovementPhase(selectedBattleUnit);
+        }
+    }
+    public void FinishMovementPhase(BattleUnit battleUnit)
+    {
+        battleUnit.SetOutlineWidth(0f);
+        battleUnit.SetUnitState(UnitState.Idle);
+    }
+    #endregion
+
+    #region Attack Methods
+
+    public void StartAttackPhase(BattleUnit battleUnit)
+    {
+        BattleGrid.Instance.ResetGridState();
+        BattleGrid.Instance.SetAttackTilesForUnit(battleUnit);
+    }
+
+    public void ExecuteAttack(BattleUnit defender)
+    {
+        BattleUnit unit = BattleSystem.Instance.GetSelectedUnit();
+
+        if (unit.IsOnMyAttackRange(defender))
+        {
+            StartCoroutine(defender.TakeDamageOnWeaponAttack((unit)));
+            FinishAttackPhase(defender);
+        }
+        else
+        {
+            Debug.Log("Not on attack range!");
+        }
+    }
+
+    public void FinishAttackPhase(BattleUnit battleUnit)
+    {
+        Debug.Log("Attack has finished!");
+        StartUnitTurn(battleUnit);
     }
 
     #endregion
@@ -43,6 +106,16 @@ public class BattleSystem : MonoBehaviour
         unit.SetUnitState(UnitState.Movement);
         unit.SetOutlineWidth(2f);
         BattleSystemUI.Instance.SetupOnUnitAttack();
+    }
+
+    public bool IsSelectedUnitAttacking(BattleUnit defender)
+    {
+        return (selectedUnit && selectedUnit.GetUnitState() == UnitState.Attack && !IsSelectedUnit(defender));
+    }
+
+    public bool IsSelectedUnit(BattleUnit unit)
+    {
+        return BattleSystem.Instance.GetSelectedUnit() == unit;
     }
 
     public BattleUnit GetSelectedUnit ()

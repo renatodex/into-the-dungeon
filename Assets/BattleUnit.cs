@@ -50,20 +50,10 @@ public class BattleUnit : MonoBehaviour
     {
         if (GetUnitState() != UnitState.Dead)
         {
-            BattleUnit unit = BattleSystem.Instance.GetSelectedUnit();
-
-            if (unit && unit.GetUnitState() == UnitState.Attack && !IsSelectedUnit())
+            if (BattleSystem.Instance.IsSelectedUnitAttacking(this))
             {
-                if (unit.IsOnMyAttackRange(this))
-                {
-                    StartCoroutine(TakeDamageOnWeaponAttack((unit)));
-                }
-                else
-                {
-                    Debug.Log("Not on attack range!");
-                }
-            }
-            else
+                BattleSystem.Instance.ExecuteAttack(this);
+            } else
             {
                 BattleSystem.Instance.StartUnitTurn(this);
             }
@@ -105,21 +95,6 @@ public class BattleUnit : MonoBehaviour
         return hovered;
     }
 
-    public void StartMovementPhase ()
-    {
-        SetOutlineWidth(2f);
-        if (!EventSystem.current.IsPointerOverGameObject())
-        {
-            BattleGrid.Instance.ResetGridState();
-            List<BattleTile> walkableTiles = GetWalkableTiles(this);
-
-            for (int i = 0; i < walkableTiles.Count(); i++)
-            {
-                walkableTiles[i].SetState(TileState.Movement);
-            }
-        }
-    }
-
     public void SetUnitState(UnitState state)
     {
         this.unitState = state;
@@ -148,7 +123,7 @@ public class BattleUnit : MonoBehaviour
 
     public bool CanMoveTo(Vector2 position)
     {
-        List<BattleTile> walkableTiles = GetWalkableTiles(this);
+        List<BattleTile> walkableTiles = GetMovementTiles(this);
         IEnumerable<BattleTile> match = walkableTiles.Where(battleTile => battleTile.GetPosition() == position);
         return match.Count() > 0;
     }
@@ -163,16 +138,22 @@ public class BattleUnit : MonoBehaviour
         return unit;
     }
 
-    #endregion
-
-    #region Private Interface
-
-    private Vector2 GetBattleFieldPosition()
+    public List<BattleTile> GetMovementTiles(BattleUnit unit)
     {
-        return battleFieldPosition;
+        return BattleGrid.Instance.GetCircularTiles(
+            unit.GetBattleFieldPosition(),
+            unit.GetUnit().movement
+        );
+    }
+    public List<BattleTile> GetAttackTiles(BattleUnit unit)
+    {
+        return BattleGrid.Instance.GetCircularTiles(
+            unit.GetBattleFieldPosition(),
+            unit.GetUnit().GetAttackRange()
+        );
     }
 
-    private bool IsOnMyAttackRange(BattleUnit unit)
+    public bool IsOnMyAttackRange(BattleUnit unit)
     {
         List<BattleTile> attackTiles = GetAttackTiles(this);
 
@@ -187,67 +168,7 @@ public class BattleUnit : MonoBehaviour
         return false;
     }
 
-    private List<BattleTile> GetAttackTiles(BattleUnit unit)
-    {
-        return GetCircularWalkableTiles(
-            unit.GetBattleFieldPosition(),
-            unit.GetUnit().GetAttackRange()
-        );
-    }
-
-    private List<BattleTile> GetWalkableTiles(BattleUnit unit)
-    {
-        return GetCircularWalkableTiles(
-            unit.GetBattleFieldPosition(),
-            unit.GetUnit().movement
-        );
-    }
-
-    private List<BattleTile> GetCircularWalkableTiles(Vector2 battleFieldPosition, int value)
-    {
-        List<BattleTile> walkableTiles = new List<BattleTile>();
-        for (int x = (int)(battleFieldPosition.x - value); x <= (int)(battleFieldPosition.x + value); x++)
-        {
-            for (int z = (int)(battleFieldPosition.y - value); z <= (int)(battleFieldPosition.y + value); z++)
-            {
-                // Manhattan Distance formula
-                int AbsX = (int)Mathf.Abs(battleFieldPosition.x - x);
-                int AbsZ = (int)Mathf.Abs(battleFieldPosition.y - z);
-
-                if (AbsX + AbsZ <= value && BattleGrid.Instance.WithinGridBounding(new Vector2(x, z)))
-                {
-                    BattleTile tile = BattleGrid.Instance.GetTileAtPosition(new Vector2(x, z));
-                    if (tile)
-                    {
-                        walkableTiles.Add(tile);
-                    }
-                }
-            }
-        }
-
-        return walkableTiles;
-    }
-
-    private bool HasAnimator()
-    {
-        return animator != null;
-    }
-
-    private void TriggerDieAnimation()
-    {
-        if (this.HasAnimator()) animator.SetTrigger("Die");
-    }
-
-    private void TriggerAttackAnimation()
-    {
-        if (this.HasAnimator()) animator.SetTrigger("BrawlAttack");
-    }
-
-    private void TriggerHitAnimation()
-    {
-        if (this.HasAnimator()) animator.SetTrigger("Hit");
-    }
-    IEnumerator TakeDamageOnWeaponAttack(BattleUnit attackerUnit)
+    public IEnumerator TakeDamageOnWeaponAttack(BattleUnit attackerUnit)
     {
         attackerUnit.TriggerAttackAnimation();
 
@@ -295,6 +216,35 @@ public class BattleUnit : MonoBehaviour
         }
 
         yield return null;
+    }
+
+    #endregion
+
+    #region Private Interface
+
+    private Vector2 GetBattleFieldPosition()
+    {
+        return battleFieldPosition;
+    }
+
+    private bool HasAnimator()
+    {
+        return animator != null;
+    }
+
+    private void TriggerDieAnimation()
+    {
+        if (this.HasAnimator()) animator.SetTrigger("Die");
+    }
+
+    private void TriggerAttackAnimation()
+    {
+        if (this.HasAnimator()) animator.SetTrigger("BrawlAttack");
+    }
+
+    private void TriggerHitAnimation()
+    {
+        if (this.HasAnimator()) animator.SetTrigger("Hit");
     }
 
     private void SetHovered(bool hovered)

@@ -14,13 +14,12 @@ public class BattleTile : MonoBehaviour
     [SerializeField] Material MovementCell;
     [SerializeField] Material TransparentCell;
     [SerializeField] TileState cellState = new TileState();
-
     [SerializeField] Renderer ColorMaterial;
     [SerializeField] GameObject HighlightGameObject;
-
     [SerializeField] bool isSelected = false;
-
     [SerializeField] Vector2 position;
+
+    #region Unity Methods
 
     // Start is called before the first frame update
     void Start()
@@ -47,29 +46,14 @@ public class BattleTile : MonoBehaviour
         }
     }
 
-    public Vector2 GetPosition ()
-    {
-        return position;
-    }
-
-    public void SetPosition(Vector2 position)
-    {
-        this.position = position;
-    }
-
     public void OnMouseDown()
     {
         if (!EventSystem.current.IsPointerOverGameObject())
         {
-            BattleUnit battleUnit = BattleSystem.Instance.GetSelectedUnit();
-            if (battleUnit.CanMoveTo(this.position) && this.cellState == TileState.Movement)
-            {
-                battleUnit.SetBattleFieldPosition(this.position);
-                BattleGrid.Instance.ResetGridState();
-                battleUnit.FinishMovementPhase();
-            }
+            BattleSystem.Instance.ExecuteMovement(this);
         }
     }
+
     public void OnMouseEnter()
     {
         if (!EventSystem.current.IsPointerOverGameObject())
@@ -83,10 +67,31 @@ public class BattleTile : MonoBehaviour
         HighlightGameObject.SetActive(false);
     }
 
+    #endregion
+
+    #region Public Interface
+
+    public Vector2 GetPosition ()
+    {
+        return position;
+    }
+
+    public void SetPosition(Vector2 position)
+    {
+        this.position = position;
+    }
+
     public void SetState(TileState state)
     {
         cellState = state;
     }
+
+    public TileState GetState()
+    {
+        return cellState;
+    }
+
+    #endregion
 
     private void SetMaterial (Material material)
     {

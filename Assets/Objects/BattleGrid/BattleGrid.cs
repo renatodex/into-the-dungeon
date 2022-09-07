@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -100,5 +101,48 @@ public class BattleGrid : MonoBehaviour
         }
 
         return null;
+    }
+
+    public List<BattleTile> GetCircularTiles(Vector2 battleFieldPosition, int value)
+    {
+        List<BattleTile> tiles = new List<BattleTile>();
+        for (int x = (int)(battleFieldPosition.x - value); x <= (int)(battleFieldPosition.x + value); x++)
+        {
+            for (int z = (int)(battleFieldPosition.y - value); z <= (int)(battleFieldPosition.y + value); z++)
+            {
+                // Manhattan Distance formula
+                int AbsX = (int)Mathf.Abs(battleFieldPosition.x - x);
+                int AbsZ = (int)Mathf.Abs(battleFieldPosition.y - z);
+
+                if (AbsX + AbsZ <= value && WithinGridBounding(new Vector2(x, z)))
+                {
+                    BattleTile tile = GetTileAtPosition(new Vector2(x, z));
+                    if (tile)
+                    {
+                        tiles.Add(tile);
+                    }
+                }
+            }
+        }
+
+        return tiles;
+    }
+
+    public void SetMovementTilesForUnit (BattleUnit battleUnit)
+    {
+        List<BattleTile> walkableTiles = battleUnit.GetMovementTiles(battleUnit);
+        for (int i = 0; i < walkableTiles.Count(); i++)
+        {
+            walkableTiles[i].SetState(TileState.Movement);
+        }
+    }
+
+    public void SetAttackTilesForUnit(BattleUnit battleUnit)
+    {
+        List<BattleTile> walkableTiles = battleUnit.GetMovementTiles(battleUnit);
+        for (int i = 0; i < walkableTiles.Count(); i++)
+        {
+            walkableTiles[i].SetState(TileState.Attack);
+        }
     }
 }
