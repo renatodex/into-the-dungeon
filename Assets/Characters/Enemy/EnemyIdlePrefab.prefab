@@ -841,6 +841,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8677338200847797335}
   - component: {fileID: 3354114964251481645}
+  - component: {fileID: 991475729}
+  - component: {fileID: 991475726}
+  - component: {fileID: 991475730}
   m_Layer: 0
   m_Name: EnemyIdlePrefab
   m_TagString: Untagged
@@ -857,7 +860,7 @@ Transform:
   m_GameObject: {fileID: 8297822605260723949}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -35.27, y: 14.3, z: -27.73}
-  m_LocalScale: {x: 350, y: 350, z: 350}
+  m_LocalScale: {x: 200, y: 200, z: 200}
   m_Children:
   - {fileID: 6892962466108475705}
   - {fileID: 3763966754875485379}
@@ -883,6 +886,77 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &991475729
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8297822605260723949}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.026965937, y: 0.037785806, z: 0.028247211}
+  m_Center: {x: 0.0044845603, y: 0.015731473, z: 0.003701521}
+--- !u!114 &991475726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8297822605260723949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c83cd35748307a4db6aa366d82f0922, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unit:
+    id: 0
+    unitName: 
+    maxHp: 0
+    currentHp: 0
+    maxMp: 0
+    currentMp: 0
+    level: 0
+    movement: 0
+    portrait: {fileID: 0}
+    mainWeapon:
+      id: 0
+      itemName: 
+      attackRange: 0
+      itemType: 
+      description: 
+      physicalAttack: 0
+      magicalAttack: 0
+      physicalDefense: 0
+      magicalDefense: 0
+      maxDurability: 0
+      currentDurability: 0
+      sellPrice: 0
+      portrait: {fileID: 0}
+  unitSO: {fileID: 11400000, guid: 426d2015f23c25244b47f60946f12ff3, type: 2}
+  battleSystem: {fileID: 0}
+  battleFieldPosition: {x: 7, y: 0}
+  unitState: 0
+--- !u!114 &991475730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8297822605260723949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 0.9433962, g: 0.18244925, b: 0.18244925, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 1
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &9077429565131975162
 GameObject:
   m_ObjectHideFlags: 0
