@@ -4210,8 +4210,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battleUnitPrefab: {fileID: 0}
   unitNameLabel: {fileID: 609792074}
-  unitHpText: {fileID: 0}
-  unitMpText: {fileID: 0}
+  unitHpText: {fileID: 1725035368}
+  unitMpText: {fileID: 1997327042}
   unitCurrentHpBar: {fileID: 55866632}
   unitCurrentMpBar: {fileID: 1201919888}
   unitLevel: {fileID: 1238073645}

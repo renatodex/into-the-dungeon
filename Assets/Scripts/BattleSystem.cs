@@ -70,6 +70,7 @@ public class BattleSystem : MonoBehaviour
 
     public void StartAttackPhase(BattleUnit battleUnit)
     {
+        battleUnit.SetUnitState(UnitState.Attack);
         BattleGrid.Instance.ResetGridState();
         BattleGrid.Instance.SetAttackTilesForUnit(battleUnit);
     }
